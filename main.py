@@ -1,8 +1,5 @@
 from tkinter import*
-import random
-
-#from tkextrafont import Font
-
+import random                                     
 
 bigz = Tk()
 bigz.geometry("1920x1080")
@@ -17,7 +14,6 @@ bfont = 'RomanWoodTypeJNL 45'
 cfont = 'RomanWoodTypeJNL 30'
 tablazatfont = 'RomanWoodTypeJNL 25'
 rangfont = 'RomanWoodTypeJNL 40'
-
 
 WIDTH, HEIGHT = 1920, 1080
 
@@ -122,7 +118,6 @@ yahtzee = False
 tripla = False
 kvintupla = False
 
-
 def kezdes():
     global entry1
     canvas.create_image(0,0,anchor = NW, image = bg, tags = "kezd")
@@ -154,7 +149,6 @@ def main(event):
     canvas.delete()
     graffelulet()
 
-
 def szvggomb(x,y,text,bcolor,fcolor,cmd):     
     gomb1 = Button(canvas,text=text, 
                         font='Arial 10',
@@ -167,7 +161,6 @@ def szvggomb(x,y,text,bcolor,fcolor,cmd):
                         activebackground=bcolor, 
                         command=cmd)
     gomb1.place(x=x,y=y)
-
 
 def kilepra(event):
     kilepgomb.config(image=kilep2)
@@ -326,7 +319,6 @@ def vegkilepes(event):
 def okgombra(event):
     rangcanvas.delete("okgomb")
     rangcanvas.create_rectangle(202, 132, 298, 188, fill="white", tags = "okgomb")
-
     
 def okgomble(event):
     rangcanvas.delete("okgomb")
@@ -341,6 +333,7 @@ def felkerultranglistara():
     felrang.place(x = WIDTH//2, y = HEIGHT//2, anchor = 'center')
     rangcanvas = Canvas(felrang, width = 500, height = 200, bg = fejlecszin)
     rangcanvas.pack()
+    Label(felrang, text="Gratulálok felkerültél a ranglistára", font = cfont, fg="white", bg = fejlecszin).place(x = 250, y = 50, anchor = 'center')
     rangcanvas.create_rectangle(202, 132, 298, 188, fill=szurke, tags = "okgomb")
     okgomb = Button(felrang, text = "ok", font = tablazatfont, bd = 0, bg = fejlecalattbezs, fg="white", command=lambda:(felrang.destroy()))
     okgomb.place(x = 250, y = 160, anchor = 'center', width = 90, height = 50)
@@ -378,7 +371,6 @@ def eredmenybetoltes():
             y = y + 80
             if i == 4:
                 x, y = 437.5,100
-    print(len(lehkombinaciok))
     if int(jatekospontszam) >= int(score) and len(lehkombinaciok) == 0:
         felkerultranglistara()
     
@@ -403,7 +395,6 @@ def eredmenybetoltes():
     kilepgomb.config(command=None)
     dobasgomb.config(command=None)
 
-#400 477
 def eredmenymentes(ujnyertes):
     try:
         with open("data.txt", "r") as file:
@@ -421,7 +412,6 @@ def eredmenymentes(ujnyertes):
         file.write("\n".join(rankozott_adat))
 
     print("Data updated and saved.")
-
 
 def gameover():
     ujnyertes = {"nev": jatekosnev, "pont": jatekospontszam}
@@ -533,12 +523,10 @@ def kilepkerdeszar():
     kilepgomb.config(command=kilepeskerdes)
     kilepfr.destroy()
 
-
 def kilepkerdeszar2(event):
     canvas.delete("torol")
     kilepgomb.config(command=kilepeskerdes)
     kilepfr.destroy()
-
 
 def kilepeskerdes():
     global igengomb, nemgomb, kilepfr, kicanvas
@@ -573,9 +561,6 @@ def kilepeskerdes():
         canvas.update()
         canvas.after(60)
  
-
-
-
 def graffelulet():
     global kilepgomb, dobasgomb, menugomb, jatekosnev, kov
     x,y = 170 + len(jatekosnev)*23.2, 260
@@ -764,7 +749,6 @@ def ketpar():
     else:
         kov = False
         gameover()
-
 
 def kispoker():
     global kov, jatekospontszam, kvintupla
@@ -1021,7 +1005,6 @@ def gombtorles():
     gombok_lista.clear()
     canvas.delete("lehgomb")
 
-
 shelbylehet = [
     "Tetszoleges",
     "Pár",
@@ -1075,10 +1058,4 @@ def dobas():
         kov = False
 
 kezdes()
-#gameover()
-#hiba ketpar 
-5
 bigz.mainloop()
-
-
-#adat betöltés folytatása hogy ne irja ki adatok elott a tipusait!!
