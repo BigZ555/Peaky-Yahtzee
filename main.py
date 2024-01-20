@@ -42,6 +42,12 @@ k5 = PhotoImage(file = 'assets/k5.png')
 k6 = PhotoImage(file = 'assets/k6.png')
 szabnyil = PhotoImage(file = 'assets/nyil.png')
 szabnyil2 = PhotoImage(file = 'assets/nyilrajta.png')
+coin1 = PhotoImage(file = 'assets/peaky_coin.png')
+coin1_2 = PhotoImage(file = 'assets/peaky_coin2.png')
+coin2 = PhotoImage(file = 'assets/thomascoin.png')
+coin2_2 = PhotoImage(file = 'assets/thomascoin2.png')
+coin1kicsi = PhotoImage(file = 'assets/peaky_coin2kicsi.png')
+coin2kicsi = PhotoImage(file = 'assets/thomascoin2kicsi.png')
 
 kockak = [k1,
           k2,
@@ -50,6 +56,7 @@ kockak = [k1,
           k5,
           k6]
 
+coinkepek = [coin1, coin2]
 kombinaciok = [
     "Tetszoleges",
     "Pár",
@@ -61,6 +68,9 @@ kombinaciok = [
     "Nagy sor",
     "Nagy póker"
 ]
+
+kissorszamok = {1,2,3,4,5}
+nagysorszamok = {2,3,4,5,6}
 
 kmbinaciok = [
     "Tetszoleges kombináció",
@@ -98,14 +108,29 @@ lehkombinaciok = [
     "Nagy Póker"
     ]
 
+shelbylehet = [
+    "Tetszőleges",
+    "Pár",
+    "Drill",
+    "Kétpár",
+    "Kispóker",
+    "Full",
+    "Kissor",
+    "Nagysor",
+    "NagyPóker"
+    ]
+
 gombok_lista = []
 jatdobszam = []
 
 canvas = Canvas(bigz, width = WIDTH, height = HEIGHT)
 canvas.pack()
 
+jatekosnev = ""
+
 jatekospontszam = 0
 shelbypontszam = 0
+kor = 0
 
 kov = True
 dupla = False
@@ -224,16 +249,28 @@ def gomboktorles():
     menugomb.destroy()
 
 def ujjatek():
-    global kockak, shelbypontszam, jatekospontszam, lehkombinaciok, parancsok
-    #mn1.destroy()   
+    global kockak, shelbypontszam, jatekospontszam, shelbylehet, lehkombinaciok, parancsok, kor
+    canvas.delete("all")    
     jatekospontszam = 0
     shelbypontszam = 0
+    kor = 0
     kockak = [k1,
           k2,
           k3,
           k4,
           k5,
           k6]
+    shelbylehet = [
+        "Tetszőleges",
+        "Pár",
+        "Drill",
+        "Kétpár",
+        "Kispóker",
+        "Full",
+        "Kissor",
+        "Nagysor",
+        "NagyPóker"
+        ]
     lehkombinaciok = [
         "Tetszoleges",
         "Pár",
@@ -246,17 +283,6 @@ def ujjatek():
         "Nagy Póker"
         ]
 
-    shelbylehet = [
-        "Tetszoleges",
-        "Pár",
-        "Drill",
-        "Két pár",
-        "Kis póker",
-        "Full",
-        "Kis sor",
-        "Nagy sor",
-        "Nagy Póker"
-        ]
     parancsok = [
         tetszoleges,
         par,
@@ -346,7 +372,7 @@ def eredmenybetoltes():
     global vegcanvas, veg
     x, y = 20,100
     veg = Frame(bigz, width=875, height=600, bg=fejlecszin)
-    veg.place(x=550, y=250)
+    veg.place(x=522.5, y=250)
     vegcanvas = Canvas(veg, width=874, height=599, bg=fejlecszin, highlightthickness=3,
                        highlightbackground=fejlecalattbezs, relief='flat')
     vegcanvas.pack()
@@ -371,7 +397,7 @@ def eredmenybetoltes():
             y = y + 80
             if i == 4:
                 x, y = 437.5,100
-    if int(jatekospontszam) >= int(score) and len(lehkombinaciok) == 0:
+    if int(jatekospontszam) > int(score) and len(lehkombinaciok) == 0 and jatnyertes == True:
         felkerultranglistara()
     
     Label(veg, bg=fejlecszin, fg='white', text='Vége a játéknak', font=bfont).place(x=437.5, y=16, anchor=N)
@@ -395,6 +421,117 @@ def eredmenybetoltes():
     kilepgomb.config(command=None)
     dobasgomb.config(command=None)
 
+def peakycoinra(event):
+    peakycoin.config(image = coin1_2)
+
+def peakycoinle(event):
+    peakycoin.config(image = coin1)
+
+def thomascoinra(event):
+    thomascoin.config(image = coin2_2)
+
+def thomascoinle(event):
+    thomascoin.config(image = coin2)
+
+def peakyvalaszt():
+    global jatvalasztas
+    jatvalasztas = 0
+
+def thomasvalaszt():
+    global jatvalasztas
+    jatvalasztas = 1
+
+def sorsolas():
+    global jatvalasztas, jatnyertes
+    t = 20
+    canvas.after(60)
+    lbl1.destroy()
+    lbl2.destroy()
+    lbl3.destroy()
+    lbl4.destroy()
+    peakycoin.destroy()
+    thomascoin.destroy()
+    nyertes.create_image(437, 300, image = coin1kicsi, tags = "coin1", anchor = 'center')
+    nyertes.create_image(437, 300, image = coin2kicsi, tags = "coin2", anchor = 'center')
+    nyertes.create_text(30, 100, text = jatekosnev, font = cfont, fill = "white", anchor = NW)
+    nyertes.create_text(845, 100, text = "Shelby", font = cfont, fill = "white", anchor = NE)
+    if jatvalasztas == 0:
+        for i in range(160):
+            nyertes.move("coin1", -2.25, -0.5)
+            nyertes.move("coin2", 2.25, -0.5)
+            canvas.update()
+    elif jatvalasztas == 1:
+        for i in range(160):
+            nyertes.move("coin2", -2.25, -0.5)
+            nyertes.move("coin1", 2.25, -0.5)
+            canvas.update()
+
+    for i in range(20):
+        nyertes.delete("coin")
+        nyertes.create_image(437, 194, anchor = N, image = coin1, tags = "coin")
+        canvas.update()
+        canvas.after(t)
+        nyertes.delete("coin")
+        nyertes.create_image(437, 194, anchor = N, image = coin2, tags = "coin")
+        canvas.update()
+        canvas.after(t)
+        t = t + 10
+    num = random.randint(0,1)
+    kep = coinkepek[num]
+    canvas.delete("coin")
+    nyertes.create_image(437, 194, anchor = N, image = kep, tags = "coin")
+    if jatvalasztas == num:
+        nyertes.create_text(437, 500, text = "Te nyertél!", font = bfont, fill = "white")
+        ujnyertes = {"nev": jatekosnev, "pont": jatekospontszam}
+        jatnyertes = True
+
+    elif jatvalasztas != num:
+        nyertes.create_text(437, 500, text = "Mr. Shelby nyert!", font = bfont, fill = "white")
+        ujnyertes = {"nev": "Thomas Shelby", "pont": shelbypontszam}
+        jatnyertes = False
+
+    nyertes.create_rectangle(657,484, 753, 540, fill = szurke, outline = '', tags = "dontgomb")
+    dontgomb = Button(mn3, text = "ok", font = tablazatfont, bd = 0, bg = fejlecalattbezs, fg="white", command=lambda:(mn3.destroy(), eredmenymentes(ujnyertes), eredmenybetoltes()))
+    dontgomb.place(x = 660, y = 487, anchor = NW, width = 90, height = 50)
+    dontgomb.bind('<Enter>', dontgombra)
+    dontgomb.bind('<Leave>', dontgomble)
+
+def dontgombra(event):
+    nyertes.delete("dontgomb")
+    nyertes.create_rectangle(657,484, 753, 540, fill = 'white', outline = '', tags = "dontgomb")
+
+def dontgomble(event):
+    nyertes.delete("dontgomb")
+    nyertes.create_rectangle(657,484, 753, 540, fill = szurke, outline = '', tags = "dontgomb")
+
+def nyertesdontes():
+    global mn3, peakycoin, thomascoin, lbl1, lbl2, lbl3, lbl4, nyertes
+    mn3 = Frame(bigz, width = 875, height = 600, bg=fejlecszin, highlightbackground=fejlecalattbezs, highlightthickness=3)
+    mn3.place(x = 522.5, y=250)
+    nyertes = Canvas(mn3, width = 875, height = 600, bg = fejlecszin, highlightbackground=fejlecalattbezs)
+    nyertes.pack()
+    Label(mn3, bg = fejlecszin, fg = 'white',text = 'Nyertes döntés', font = bfont).place(x = 291, y = 16)
+    lbl1 = Label(mn3, bg = fejlecszin,  
+          fg = 'white',text = ',,Minden fontos döntés eLott feldobtam egy érmét, tán ez megteszi most is”', font = 'RomanWoodTypeJNL 20')
+    lbl1.place(x = 437, y = 100, anchor = N)
+    lbl2 = Label(mn3, bg = fejlecszin, 
+          fg = 'white', text = 'Pontszámod egyenlö MR. Shelby pontszámával', font = 'RomanWoodTypeJNL 20')
+    lbl2.place(x = 437, y = 500,anchor = N)
+    lbl3 = Label(mn3, bg = fejlecszin, 
+          fg = 'white', text = 'Így a nyertes pénzfeldobással lesz eldöntve', font = 'RomanWoodTypeJNL 20')
+    lbl3.place(x = 437, y = 532,anchor = N)
+    lbl4 = Label(mn3, bg = fejlecszin, 
+          fg = 'white', text = 'Válassz egy érmét', font = 'RomanWoodTypeJNL 15')
+    lbl4.place(x = 437, y = 564,anchor = N)
+    peakycoin = Button(mn3, image= coin1, command = lambda:(peakyvalaszt(), sorsolas()), bd = 0, bg = fejlecszin, activebackground=fejlecszin)
+    thomascoin = Button(mn3, image = coin2, command= lambda: (thomasvalaszt(), sorsolas()), bd = 0, bg = fejlecszin, activebackground=fejlecszin)
+    peakycoin.place(x = 70, y = 194, anchor = NW)
+    thomascoin.place(x = 568, y = 194, anchor = NW)
+    peakycoin.bind('<Enter>', peakycoinra)
+    peakycoin.bind('<Leave>', peakycoinle)
+    thomascoin.bind('<Enter>', thomascoinra)
+    thomascoin.bind('<Leave>', thomascoinle)
+
 def eredmenymentes(ujnyertes):
     try:
         with open("data.txt", "r") as file:
@@ -411,17 +548,25 @@ def eredmenymentes(ujnyertes):
     with open("data.txt", "w") as file:
         file.write("\n".join(rankozott_adat))
 
-    print("Data updated and saved.")
 
 def gameover():
-    ujnyertes = {"nev": jatekosnev, "pont": jatekospontszam}
+    global jatnyertes
+    if jatekospontszam > shelbypontszam:
+        jatnyertes = True
+        ujnyertes = {"nev": jatekosnev, "pont": jatekospontszam}
+    elif shelbypontszam > jatekospontszam:
+        jatnyertes = False
+        ujnyertes = {"nev": "Thomas Shelby", "pont": shelbypontszam}
+    elif jatekospontszam == shelbypontszam:
+        nyertesdontes()
+        
     eredmenymentes(ujnyertes)
     eredmenybetoltes()
 
 def menu():
     global mn1
     mn1 = Frame(bigz, width = 875, height = 600, bg=fejlecszin)
-    mn1.place(x = 550, y=250)
+    mn1.place(x = 522.5, y=250)
     menucanvas = Canvas(mn1, width = 874, height = 599, bg = fejlecszin,highlightthickness= 3, highlightbackground=fejlecalattbezs, relief='flat')
     menucanvas.pack()
     Label(mn1, bg = fejlecszin, fg = 'white',text = jatekosnev, font = tablazatfont).place(x = 31, y = 16)
@@ -477,7 +622,7 @@ def szabalyzat():
     visszgomb.bind('<Leave>', visszgomble)
     canvas.bind_all('<Escape>', szabbezar)
 
-def jatpontszamiras(jatekospontszam):
+def pontszamiras(jatekospontszam, shelbypontszam):
     x = 170 + len(jatekosnev)*23.2
     canvas.delete("pontszam")
     text1 = "Pontszám: " + str(jatekospontszam)
@@ -574,10 +719,8 @@ def graffelulet():
     canvas.create_rectangle(116, 10, 119,80, fill=fejlecalattbezs,outline = '' )
     canvas.create_text(1616, 35, text = "shelby", anchor = W, fill="white", font=afont)
     canvas.create_text(138, 35, text = jatekosnev, anchor = W, fill="white", font=afont)
-    
     canvas.create_rectangle(x, 10, x+3, 80, fill=fejlecalattbezs, outline= '')
-    jatpontszamiras(jatekospontszam)
-    
+    pontszamiras(jatekospontszam, shelbypontszam)
     canvas.create_rectangle(1600, 10, 1603, 80, fill=fejlecalattbezs, outline= '')
     canvas.create_text(25, 182, text=jatekosnev + ':', fill="white", font = bfont, anchor = NW)
     canvas.create_text(WIDTH - 10, 182, text="shelby:", fill="white", font = bfont, anchor = NE)
@@ -623,16 +766,16 @@ def graffelulet():
     for i in range(6):
         img = random.choice(kockak)
         kockak.remove(img)
-        canvas.create_image(25, 260, anchor = NW, image = img)
-        canvas.create_image(WIDTH-25, 260, anchor = NE, image = img)
-        canvas.create_image(25, 380, anchor = NW, image = img)
-        canvas.create_image(WIDTH-25, 380, anchor = NE, image = img)
-        canvas.create_image(25, 500, anchor = NW, image = img)
-        canvas.create_image(WIDTH-25, 500, anchor = NE, image = img)
-        canvas.create_image(25, 620, anchor = NW, image = img)
-        canvas.create_image(WIDTH-25, 620, anchor = NE, image = img)
-        canvas.create_image(25, 740, anchor = NW, image = img)
-        canvas.create_image(WIDTH-25, 740, anchor = NE, image = img)
+        canvas.create_image(25, 260, anchor = NW, image = img, tags = "kocka")
+        canvas.create_image(WIDTH-25, 260, anchor = NE, image = img, tags = "kocka")
+        canvas.create_image(25, 380, anchor = NW, image = img, tags = "kocka")
+        canvas.create_image(WIDTH-25, 380, anchor = NE, image = img, tags = "kocka")
+        canvas.create_image(25, 500, anchor = NW, image = img, tags = "kocka")
+        canvas.create_image(WIDTH-25, 500, anchor = NE, image = img, tags = "kocka")
+        canvas.create_image(25, 620, anchor = NW, image = img, tags = "kocka")
+        canvas.create_image(WIDTH-25, 620, anchor = NE, image = img, tags = "kocka")
+        canvas.create_image(25, 740, anchor = NW, image = img, tags = "kocka")
+        canvas.create_image(WIDTH-25, 740, anchor = NE, image = img, tags = "kocka")
         canvas.after(120)
         canvas.update()
     kov = True
@@ -640,6 +783,7 @@ def graffelulet():
 def kockakrajzolas(jatdobszam, sheldobszam):
     y = 260
     x1, x2 = 25, WIDTH - 25
+    canvas.delete("kocka")
     for i in range(0, 5):
         if jatdobszam[i] == 1:
             kep1 = k1
@@ -653,7 +797,7 @@ def kockakrajzolas(jatdobszam, sheldobszam):
             kep1 = k5
         elif jatdobszam[i] == 6:
             kep1 = k6
-        canvas.create_image(x1, y, anchor = NW, image = kep1, tags="kockak")
+        canvas.create_image(x1, y, anchor = NW, image = kep1, tags="kocka")
         y = y + 120
     y = 260
     for i in range(0, 5):
@@ -669,7 +813,7 @@ def kockakrajzolas(jatdobszam, sheldobszam):
             kep2 = k5
         elif sheldobszam[i] == 6:
             kep2 = k6
-        canvas.create_image(x2, y, anchor = NE, image = kep2, tags="kockak")
+        canvas.create_image(x2, y, anchor = NE, image = kep2, tags="kocka")
         y = y + 120
 
 def tetszoleges():
@@ -683,7 +827,7 @@ def tetszoleges():
     canvas.create_text(x,y, text=ertek,anchor = N,fill = "white", font=tablazatfont)
     tablazatvillogas()
     jatekospontszam = jatekospontszam + ertek
-    jatpontszamiras(jatekospontszam)
+    pontszamiras(jatekospontszam, shelbypontszam)
     if len(lehkombinaciok) != 0:
         kov = True
     else:
@@ -703,7 +847,7 @@ def par():
     jatekospontszam = jatekospontszam + ertek
     canvas.create_text(x,y, text=ertek,anchor = N,fill = "white", font=tablazatfont)
     tablazatvillogas()
-    jatpontszamiras(jatekospontszam)    
+    pontszamiras(jatekospontszam, shelbypontszam)    
     if len(lehkombinaciok) != 0:
         kov = True
     else:
@@ -723,7 +867,7 @@ def drill():
     jatekospontszam = jatekospontszam + ertek
     canvas.create_text(x,y, text=ertek,anchor = N,fill = "white",font=tablazatfont)
     tablazatvillogas()
-    jatpontszamiras(jatekospontszam)
+    pontszamiras(jatekospontszam, shelbypontszam) 
     if len(lehkombinaciok) != 0:
         kov = True
     else:
@@ -743,7 +887,7 @@ def ketpar():
     jatekospontszam = jatekospontszam + ertek
     canvas.create_text(x,y, text=ertek,anchor = N,fill = "white", font=tablazatfont)
     tablazatvillogas()
-    jatpontszamiras(jatekospontszam)
+    pontszamiras(jatekospontszam, shelbypontszam) 
     if len(lehkombinaciok) != 0:
         kov = True
     else:
@@ -763,7 +907,7 @@ def kispoker():
     jatekospontszam = jatekospontszam + ertek
     canvas.create_text(x,y, text=ertek,anchor = N, fill = "white",font=tablazatfont)
     tablazatvillogas()
-    jatpontszamiras(jatekospontszam)
+    pontszamiras(jatekospontszam, shelbypontszam) 
     if len(lehkombinaciok) != 0:
         kov = True
     else:
@@ -783,7 +927,7 @@ def full():                                         #tripla dupla hibák
     jatekospontszam = jatekospontszam + ertek
     canvas.create_text(x,y, text=ertek,anchor = N,fill = "white", font=tablazatfont)
     tablazatvillogas()
-    jatpontszamiras(jatekospontszam)    
+    pontszamiras(jatekospontszam, shelbypontszam)     
     if len(lehkombinaciok) != 0:
         kov = True
     else:
@@ -803,7 +947,7 @@ def kissor():
     jatekospontszam = jatekospontszam + ertek
     canvas.create_text(x,y, text=ertek,anchor = N, fill = "white",font=tablazatfont)
     tablazatvillogas()
-    jatpontszamiras(jatekospontszam)
+    pontszamiras(jatekospontszam, shelbypontszam) 
     if len(lehkombinaciok) != 0:
         kov = True
     else:
@@ -823,7 +967,7 @@ def nagysor():
     jatekospontszam = jatekospontszam + ertek
     canvas.create_text(x,y, text=ertek,anchor = N,fill = "white", font=tablazatfont)
     tablazatvillogas()
-    jatpontszamiras(jatekospontszam)
+    pontszamiras(jatekospontszam, shelbypontszam) 
     if len(lehkombinaciok) != 0:
         kov = True
     else:
@@ -844,7 +988,7 @@ def nagypoker():
     jatekospontszam = jatekospontszam + ertek
     canvas.create_text(x,y, text=ertek,anchor = N,fill = "white", font=tablazatfont)
     tablazatvillogas()
-    jatpontszamiras(jatekospontszam)
+    pontszamiras(jatekospontszam, shelbypontszam) 
     if len(lehkombinaciok) != 0:
         kov = True
     else:
@@ -880,8 +1024,7 @@ def lehetosegek(jatismell):
     y, y2 = 313, 360
     dszam, tszam, kvint = 0,0,0
     duplak = []
-    kissorszamok = {1,2,3,4,5}
-    nagysorszamok = {2,3,4,5,6}
+
     visszaallitas()
     for i in range(1,7):
         if (jatismell[i] == 5):
@@ -1005,41 +1148,237 @@ def gombtorles():
     gombok_lista.clear()
     canvas.delete("lehgomb")
 
-shelbylehet = [
-    "Tetszoleges",
-    "Pár",
-    "Drill",
-    "Két pár",
-    "Kis póker",
-    "Full",
-    "Kis sor",
-    "Nagy sor",
-    "Nagy Póker"
-    ]
+def shelbyvalasztkiiras(valasztas, shelszam):
+    canvas.create_text(1385, 185, text = "Shelby választása:", font = bfont, anchor = N,fill = "white", tags = "shelby")
+    canvas.create_text(1385, 245, text = valasztas, font = bfont, anchor = N, fill = "white",tags = "shelby")
+    canvas.create_text(1385, 305, text = "+ " + str(shelszam) + " pont", font = bfont,fill = "white", anchor = N, tags = "shelby")  
 
 def shelbygondol(shelismell):
-    duplak = []
-    
+    global shelbypontszam, kor
+    kor = kor + 1
+    x = 1600
+    shkp = False
+    shdrill = False
+    shelduplak = []
     for i in range(1,7):
-        if (shelismell[i] == 5):
-            print("Kvintupla" +str(i) + ":"  + str(i*5) + "pont")
-            shelbylehet.remove("Nagy Póker")
-        elif (shelismell[i] == 4):
-            print("Kvadpla" + str(i) + ":"   + str(i*4) + "pont")
-            shelbylehet.remove("Nagy Póker")
-        elif (shelismell[i] == 3):
-            print("Tripla" +str(i) + ":"  + str(i*3) + "pont")
-            dszam = i
-            sheltripla = True
-        elif (shelismell[i] == 2):
-            print("Dupla" +str(i) + ":"   + str(i*2) + "pont")
-            dszam = i
-            duplak.append(i)
-            sheldupla = True
+        if (shelismell[i] >= 2):
+            shelduplak.append(i)
+            
+        if (shelismell[i] >=4):
+            shkvint = i
+            shkp = True
+        if (shelismell[i] >=3):
+            shtripla = i
+            shdrill = True
+    if len(shelduplak) >= 1:
+        shelduplak.sort()
+        shdupla = shelduplak[0]
+        
+ 
+    if 5 in shelismell and "NagyPóker" in shelbylehet:
+        shelszam = 50
+        shelbypontszam = shelbypontszam + shelszam
+        shelbylehet.remove("NagyPóker")
+        valasztas = "Nagy Póker"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,859, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
     
+    elif shkp == True and "Kispóker" in shelbylehet:
+        shelszam = 4*shkvint
+        shelbypontszam = shelbypontszam + shelszam
+        shelbylehet.remove("Kispóker")
+        valasztas = "Kis Póker"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,683, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif (3 in shelismell) and (2 in shelismell) and "Full" in shelbylehet:
+        shelbylehet.remove("Full")
+        valasztas = "Full"
+        shelszam = sum(sheldobszam)
+        shelbypontszam = shelbypontszam + shelszam
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,727, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif len(shelduplak) == 2 and "Kétpár" in shelbylehet and sum(shelduplak) >= 10:
+        shelbylehet.remove("Kétpár")
+        valasztas = "Két Pár"
+        shelszam = int(shelduplak[0])*2 + int(shelduplak[1])*2
+        shelbypontszam = shelbypontszam + shelszam
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,639, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif set(sheldobszam) == nagysorszamok and "Nagysor" in shelbylehet:
+        shelbylehet.remove("Nagysor")
+        valasztas = "Nagysor"
+        shelszam = 20
+        shelbypontszam = shelbypontszam + shelszam
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,815, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+    
+    elif set(sheldobszam) == kissorszamok and "Kissor" in shelbylehet:
+        shelbylehet.remove("Kissor")
+        valasztas = "Kissor"
+        shelszam = 15
+        shelbypontszam = shelbypontszam + shelszam
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,771, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+
+    elif shdrill == True and "Drill" in shelbylehet and shtripla >3:
+        shelbylehet.remove("Drill")
+        shelszam = shtripla*3
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Drill"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,595, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif len(shelduplak) >= 1 and shdupla >= 4 and "Pár" in shelbylehet:
+        shelbylehet.remove("Pár")
+        shelszam = shdupla*2
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Pár"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,551, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+    
+    elif "Tetszőleges" in shelbylehet and sum(sheldobszam) >= 20:
+        shelbylehet.remove("Tetszőleges")
+        shelszam = sum(sheldobszam)
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Tetszőleges"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,507, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif "NagyPóker" in shelbylehet and kor > 1:
+        shelbylehet.remove("NagyPóker")
+        shelszam = 0
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Nagy Póker"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,859, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif "Nagysor" in shelbylehet:
+        shelbylehet.remove("Nagysor")
+        shelszam = 0
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Nagysor"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,815, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+    
+    elif "Kissor" in shelbylehet:
+        shelbylehet.remove("Kissor")
+        shelszam = 0
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Kissor"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,771, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif "Full" in shelbylehet:
+        shelbylehet.remove("Full")
+        shelszam = 0
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Full"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,727, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif "Kispóker" in shelbylehet:
+        shelszam = 0
+        shelbypontszam = shelbypontszam + shelszam
+        shelbylehet.remove("Kispóker")
+        valasztas = "Kis Póker"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,683, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif "Kétpár" in shelbylehet:
+        shelbylehet.remove("Kétpár")
+        shelszam = 0
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Két pár"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,639, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif "Pár" in shelbylehet and len(shelduplak) >= 1:
+        shelbylehet.remove("Pár")
+        shelszam = shdupla*2
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Pár"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,551, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif "Drill" in shelbylehet and shdrill == True:
+        shelbylehet.remove("Drill")
+        shelszam = shtripla*3
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Drill"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,595, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+    
+    elif "Pár" in shelbylehet:
+        shelbylehet.remove("Pár")
+        shelszam = 0
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Pár"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,551, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif "Drill" in shelbylehet:
+        shelbylehet.remove("Drill")
+        shelszam = 0
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Drill"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,595, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
+    elif "Tetszőleges" in shelbylehet:
+        shelbylehet.remove("Tetszőleges")
+        shelszam = sum(sheldobszam)
+        shelbypontszam = shelbypontszam + shelszam
+        valasztas = "Tetszőleges"
+        shelbyvalasztkiiras(valasztas, shelszam)
+        pontszamiras(jatekospontszam, shelbypontszam)
+        canvas.create_text(x,507, text=shelszam,anchor = N,fill = "white", font=tablazatfont)
+        tablazatvillogas()
+
 def dobas():
     global jatdobszam,sheldobszam, kov
-
+    canvas.delete("shelby")
     if kov == True:
         jatdobszam = []
         jatismell = [0,0,0,0,0,0,0]
@@ -1051,11 +1390,11 @@ def dobas():
             jatdobszam.append(szam1)
             sheldobszam.append(szam2) 
             jatismell[szam1]+=1
-            shelismell[szam2]+=1     
+            shelismell[szam2]+=1  
         kockakrajzolas(jatdobszam, sheldobszam)
         lehetosegek(jatismell)
-        #shelbygondol(shelismell)
+        shelbygondol(shelismell)
         kov = False
 
 kezdes()
-bigz.mainloop()
+bigz.mainloop() 
